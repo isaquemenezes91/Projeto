@@ -1,11 +1,16 @@
-﻿namespace ControleDeNota.Models
+﻿using ControleDeNota.Enum;
+using System.Runtime.CompilerServices;
+
+namespace ControleDeNota.Models
 {
     public class NotaModel
     {
-        public int NotaId { get; set; }
-        public double PrimeiraNota { get; set; }
-        public double SegundaNota { get; set; }
-        public double TerceiraNota { get; set; }
+        public int Id { get; set; }
+        
+
+        public float NotaDaDisciplina { get; set; }
+
+        public Disciplina Disciplina { get; set; }
 
     }
 }
