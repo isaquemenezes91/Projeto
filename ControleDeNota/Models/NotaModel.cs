@@ -5,6 +5,8 @@ namespace ControleDeNota.Models
 {
     public class NotaModel
     {
+        
+
         public int Id { get; set; }
         
 
@@ -12,5 +14,11 @@ namespace ControleDeNota.Models
 
         public Disciplina Disciplina { get; set; }
 
+        public NotaModel()
+        {
+            
+            NotaDaDisciplina = 0;
+            Disciplina = Disciplina.Portugues;
+        }
     }
 }
