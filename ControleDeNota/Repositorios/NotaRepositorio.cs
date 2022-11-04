@@ -22,6 +22,7 @@ namespace ControleDeNota.Repositorios
         }
         public async Task<NotaModel> AdicionarNota(NotaModel nota)
         {
+
             
             await _dbContext.Notas.AddAsync(nota);
             await _dbContext.SaveChangesAsync();
@@ -42,9 +43,19 @@ namespace ControleDeNota.Repositorios
             return NotaPorID;
         }
 
-        public Task<bool> RemoverNota(int id)
+        public async Task<bool> RemoverNota(int id)
         {
-            throw new NotImplementedException();
+
+            NotaModel notaPorID = await BuscarPorIDNota(id);
+            if (notaPorID == null)
+            {
+                throw new Exception($"Aluno com Id: {id} nao foi encontrado no Banco de dados");
+            }
+
+            _dbContext.Remove(notaPorID);
+            _dbContext.SaveChanges();
+
+            return true;
         }
     }
 }

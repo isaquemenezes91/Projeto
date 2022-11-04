@@ -29,5 +29,11 @@ namespace ControleDeNota.Controllers
             return Ok(nota);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<NotaModel>> RemoverNota(int id)
+        {
+            bool removido = await _notaRepositorio.RemoverNota(id); ;
+            return Ok(removido);
+        }
     }
 }
