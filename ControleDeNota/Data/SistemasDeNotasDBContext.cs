@@ -1,4 +1,4 @@
-﻿using ControleDeNota.Data.Map;
+﻿using ControleDeNota.Data;
 using ControleDeNota.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +16,7 @@ namespace ControleDeNota.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new AlunoMap());
-            modelBuilder.ApplyConfiguration(new NotaMap());
+            
             base.OnModelCreating(modelBuilder);
         }
     }

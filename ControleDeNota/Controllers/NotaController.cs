@@ -35,5 +35,13 @@ namespace ControleDeNota.Controllers
             bool removido = await _notaRepositorio.RemoverNota(id); ;
             return Ok(removido);
         }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<NotaModel>> AtualizarNota([FromBody] NotaModel notaModel, int id)
+        {
+            notaModel.Id = id;
+            NotaModel nota = await _notaRepositorio.AtualizarNota(notaModel, id);
+            return Ok(nota);
+        }
+
     }
 }

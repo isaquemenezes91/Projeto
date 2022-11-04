@@ -18,7 +18,7 @@ namespace ControleDeNota.Repositorios
         {
             await _dbContext.Alunos.AddAsync(aluno);
             await _dbContext.SaveChangesAsync();
-            return aluno  ;
+            return aluno ;
         }
 
         public async Task<AlunoModel> Atualizar(AlunoModel aluno, int id)

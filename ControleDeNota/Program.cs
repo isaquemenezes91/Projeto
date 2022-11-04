@@ -19,6 +19,7 @@ builder.Services.AddEntityFrameworkSqlServer()
      );
 
 builder.Services.AddScoped<IAlunoRepositorio, AlunoRepositorio>();
+builder.Services.AddScoped<INotaRepositorio, NotaRepositorio>();
 
 var app = builder.Build();
 
