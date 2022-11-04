@@ -1,5 +1,5 @@
 using ControleDeNota.Data;
-using ControleDeNota.Migrations;
+
 using ControleDeNota.Repositorios;
 using ControleDeNota.Repositorios.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +15,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddEntityFrameworkSqlServer()
     .AddDbContext<SistemasDeNotasDBContext>(
-        options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase")
-        )
-                                        
-    );
+        options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
+     );
 
 builder.Services.AddScoped<IAlunoRepositorio, AlunoRepositorio>();
+builder.Services.AddScoped<INotaRepositorio, NotaRepositorio>();
 
 var app = builder.Build();
 

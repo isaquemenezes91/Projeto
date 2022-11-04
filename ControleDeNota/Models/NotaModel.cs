@@ -1,11 +1,27 @@
-﻿namespace ControleDeNota.Models
+﻿using ControleDeNota;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
+
+namespace ControleDeNota.Models
 {
     public class NotaModel
     {
-        public int NotaId { get; set; }
-        public double PrimeiraNota { get; set; }
-        public double SegundaNota { get; set; }
-        public double TerceiraNota { get; set; }
+
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public int AlunoId { get; set; }
+       
+
+        [Required]
+        public float NotaDaDisciplina { get; set; }
+
+        [Required]
+        public Disciplinas Disciplina { get; set; }
+
 
     }
+
 }

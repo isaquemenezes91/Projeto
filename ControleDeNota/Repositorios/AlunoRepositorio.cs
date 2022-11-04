@@ -9,6 +9,7 @@ namespace ControleDeNota.Repositorios
 
     {
         private readonly SistemasDeNotasDBContext _dbContext;
+       
         public AlunoRepositorio(SistemasDeNotasDBContext sistemasDeNotasDBContext)
         {
             _dbContext = sistemasDeNotasDBContext;
@@ -17,7 +18,7 @@ namespace ControleDeNota.Repositorios
         {
             await _dbContext.Alunos.AddAsync(aluno);
             await _dbContext.SaveChangesAsync();
-            return aluno  ;
+            return aluno ;
         }
 
         public async Task<AlunoModel> Atualizar(AlunoModel aluno, int id)
@@ -35,13 +36,16 @@ namespace ControleDeNota.Repositorios
         }
 
         public async Task<AlunoModel> BuscarPorId(int id)
+
         {
-            return await _dbContext.Alunos.FirstOrDefaultAsync(x => x.Id == id);
+
+            return await _dbContext.Alunos.Include(i=>i.Notas).FirstOrDefaultAsync(x => x.Id == id);
+            
         }
 
         public async Task<List<AlunoModel>> MostrarTodosAlunos()
         {
-            return await _dbContext.Alunos.ToListAsync();
+            return await _dbContext.Alunos.Include(i=>i.Notas).ToListAsync();
         }
 
         public async Task<bool> Remover(int id)

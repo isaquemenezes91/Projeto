@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleDeNota.Migrations
 {
     [DbContext(typeof(SistemasDeNotasDBContext))]
-    [Migration("20221028010719_InitialDB")]
-    partial class InitialDB
+    [Migration("20221104193457_DBSistema")]
+    partial class DBSistema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,8 +33,8 @@ namespace ControleDeNota.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -43,24 +43,40 @@ namespace ControleDeNota.Migrations
 
             modelBuilder.Entity("ControleDeNota.Models.NotaModel", b =>
                 {
-                    b.Property<int>("NotaId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotaId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("PrimeiraNota")
-                        .HasColumnType("float");
+                    b.Property<int>("AlunoId")
+                        .HasColumnType("int");
 
-                    b.Property<double>("SegundaNota")
-                        .HasColumnType("float");
+                    b.Property<int>("Disciplina")
+                        .HasColumnType("int");
 
-                    b.Property<double>("TerceiraNota")
-                        .HasColumnType("float");
+                    b.Property<float>("NotaDaDisciplina")
+                        .HasColumnType("real");
 
-                    b.HasKey("NotaId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlunoId");
 
                     b.ToTable("Notas");
+                });
+
+            modelBuilder.Entity("ControleDeNota.Models.NotaModel", b =>
+                {
+                    b.HasOne("ControleDeNota.Models.AlunoModel", null)
+                        .WithMany("Notas")
+                        .HasForeignKey("AlunoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ControleDeNota.Models.AlunoModel", b =>
+                {
+                    b.Navigation("Notas");
                 });
 #pragma warning restore 612, 618
         }
