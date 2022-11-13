@@ -1,7 +1,11 @@
-﻿using ControleDeNota.Models;
+﻿using ControleDeNota.Data;
+using ControleDeNota.Dtos;
+using ControleDeNota.Models;
+using ControleDeNota.Repositorios;
 using ControleDeNota.Repositorios.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace ControleDeNota.Controllers
 {
@@ -10,46 +14,126 @@ namespace ControleDeNota.Controllers
     public class AlunoController : ControllerBase
 
     {
-        private readonly IAlunoRepositorio _alunoRepositorio;
-        public  AlunoController(IAlunoRepositorio alunoRepositorio)
+        private readonly AlunoRepositorio _alunoRepositorio;
+        private readonly LogErrorRepositorio _logRepositorio;
+        private readonly string erroBadRequest = "Ocorreu uma falha interna, favor tente novamente mais tarde ou procure um dos nossos suportes!";
+        public  AlunoController(SistemasDeNotasDBContext contexto)
         {
-            _alunoRepositorio = alunoRepositorio;
+            _alunoRepositorio = new(contexto);
+            _logRepositorio = new(contexto);
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlunoModel>>> MostrarTodosAlunos()
+        public IActionResult MostrarTodosAlunos()
         {
-            List<AlunoModel> alunos = await _alunoRepositorio.MostrarTodosAlunos();
-            return Ok(alunos);
+            List<AlunoDto> retorno = new();
+            try
+            {
+                var alunosBase = _alunoRepositorio.MostrarTodosAlunos();
+                if (alunosBase.Count() > 0)
+                {
+                    foreach(AlunoModel aluno in alunosBase)
+                    {
+                        AlunoDto dto = new();
+                        dto.Id = aluno.Id;
+                        dto.Nome = aluno.Nome;
+                        retorno.Add(dto);
+                    }
+
+                }
+                return Ok(retorno);
+            }
+            catch(Exception ex)
+            {
+                _logRepositorio.Adicionar(ex);
+                return BadRequest(erroBadRequest);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AlunoModel>> BuscarPorId( int id)
+        public IActionResult BuscarPorId(int id)
         {
-            AlunoModel aluno = await _alunoRepositorio.BuscarPorId(id);
-            return Ok(aluno);
+            try
+            {
+                AlunoModel aluno =  _alunoRepositorio.BuscarPorId(id);
+                if (aluno == null)
+                {
+                    
+                    return BadRequest($"Não foi possivel encontrar o ID:{id}");
+
+                }
+                return Ok(aluno);
+
+            }
+            catch (Exception ex)
+            {
+                _logRepositorio.Adicionar(ex);
+                return BadRequest(erroBadRequest);
+            }
+
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlunoModel>> Adicionar([FromBody] AlunoModel alunoModel)
+        public IActionResult Adicionar(AlunoDto dto)
         {
-            AlunoModel aluno = await _alunoRepositorio.Adicionar(alunoModel);
-            return Ok(aluno);
+            AlunoModel aluno = new();
+            try
+            {
+                aluno.Nome = dto.Nome;
+                _alunoRepositorio.Adicionar(aluno);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                _logRepositorio.Adicionar(ex);
+                return BadRequest(erroBadRequest);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AlunoModel>> Atualizar([FromBody]AlunoModel alunoModel,int id)
+        public IActionResult Atualizar(int id, AlunoModel aluno)
         {
-            alunoModel.Id = id;
-            AlunoModel aluno = await _alunoRepositorio.Atualizar(alunoModel, id);
-            return Ok(aluno);
+            try
+            {
+                var alunoBase = _alunoRepositorio.BuscarPorId(id);
+                if (alunoBase == null)
+                {
+                    return BadRequest($"Não foi possivel encontrar o ID:{id}");
+                }
+
+                alunoBase.Nome = aluno.Nome;
+                alunoBase.Notas = aluno.Notas;
+                _alunoRepositorio.Atualizar(alunoBase);
+                
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logRepositorio.Adicionar(ex);
+                return BadRequest(erroBadRequest);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<AlunoModel>> Remover(int id)
+        public IActionResult Remover(int id)
         {
-            bool removido = await _alunoRepositorio.Remover(id); ;
-            return Ok(removido);
+            try
+            {
+                var alunoBase = _alunoRepositorio.BuscarPorId(id);
+                if (alunoBase == null)
+                {
+                    return BadRequest($"Não foi possivel encontrar o ID:{id}");
+                }
+                _alunoRepositorio.Remover(alunoBase);
+                _alunoRepositorio.SaveChanges();
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                _logRepositorio.Adicionar(ex);
+                return BadRequest(erroBadRequest);
+            }
         }
 
     }

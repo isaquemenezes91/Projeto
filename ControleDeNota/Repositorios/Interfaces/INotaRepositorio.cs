@@ -4,10 +4,9 @@ namespace ControleDeNota.Repositorios.Interfaces
 {
     public interface INotaRepositorio
     {
-        Task<NotaModel> AdicionarNota(NotaModel nota);
-        Task<NotaModel> AtualizarNota(NotaModel nota, int id);
-        Task<bool> RemoverNota(int id);
-
-        Task<NotaModel> BuscarPorIDNota(int id);
+        void AdicionarNota(NotaModel nota);
+        void AtualizarNota(NotaModel nota);
+        void RemoverNota(NotaModel nota);
+        NotaModel BuscarPorIDNota(int id);
     }
 }

@@ -4,6 +4,7 @@ using ControleDeNota.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleDeNota.Migrations
 {
     [DbContext(typeof(SistemasDeNotasDBContext))]
-    partial class SistemasDeNotasDBContextModelSnapshot : ModelSnapshot
+    [Migration("20221113153255_logErro")]
+    partial class logErro
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,9 +83,8 @@ namespace ControleDeNota.Migrations
                     b.Property<int>("AlunoId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Disciplina")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Disciplina")
+                        .HasColumnType("int");
 
                     b.Property<float>("NotaDaDisciplina")
                         .HasColumnType("real");

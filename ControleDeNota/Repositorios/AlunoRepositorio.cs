@@ -8,58 +8,47 @@ namespace ControleDeNota.Repositorios
     public class AlunoRepositorio : IAlunoRepositorio
 
     {
-        private readonly SistemasDeNotasDBContext _dbContext;
-       
-        public AlunoRepositorio(SistemasDeNotasDBContext sistemasDeNotasDBContext)
+
+        private SistemasDeNotasDBContext _ctx;
+        public AlunoRepositorio(SistemasDeNotasDBContext ctx)
         {
-            _dbContext = sistemasDeNotasDBContext;
-        }
-        public async Task<AlunoModel> Adicionar(AlunoModel aluno)
-        {
-            await _dbContext.Alunos.AddAsync(aluno);
-            await _dbContext.SaveChangesAsync();
-            return aluno ;
+            _ctx = ctx;
         }
 
-        public async Task<AlunoModel> Atualizar(AlunoModel aluno, int id)
+        public List<AlunoModel> MostrarTodosAlunos()
         {
-            AlunoModel alunoPorID = await BuscarPorId(id);
-            if(alunoPorID == null)
-            {
-                throw new Exception($"Aluno com Id: {id} nao foi encontrado no Banco de dados");
-            }
-            alunoPorID.Nome = aluno.Nome;
-            _dbContext.Update(alunoPorID);
-            _dbContext.SaveChanges();
-
-            return alunoPorID;
+            return _ctx.Alunos.ToList();
+        }
+        public void Adicionar(AlunoModel aluno)
+        {
+            _ctx.Alunos.Add(aluno);
+            _ctx.SaveChanges();
         }
 
-        public async Task<AlunoModel> BuscarPorId(int id)
-
+        public void Atualizar(AlunoModel aluno)
         {
-
-            return await _dbContext.Alunos.Include(i=>i.Notas).FirstOrDefaultAsync(x => x.Id == id);
-            
+            _ctx.Update(aluno);
+            _ctx.SaveChanges();
         }
 
-        public async Task<List<AlunoModel>> MostrarTodosAlunos()
+        public AlunoModel BuscarPorId(int id)
         {
-            return await _dbContext.Alunos.Include(i=>i.Notas).ToListAsync();
+            return _ctx.Alunos
+                .Include(i => i.Notas)
+                .FirstOrDefault(j => j.Id.Equals(id));
         }
 
-        public async Task<bool> Remover(int id)
-        {
-            AlunoModel alunoPorID = await BuscarPorId(id);
-            if (alunoPorID == null)
-            {
-                throw new Exception($"Aluno com Id: {id} nao foi encontrado no Banco de dados");
-            }
-            
-            _dbContext.Remove(alunoPorID);
-            _dbContext.SaveChanges();
 
-            return true;
+
+        public void Remover(AlunoModel aluno)
+        {
+            _ctx.Alunos.Remove(aluno);
+        }
+
+
+        public void SaveChanges()
+        {
+            _ctx.SaveChanges();
         }
     }
 }

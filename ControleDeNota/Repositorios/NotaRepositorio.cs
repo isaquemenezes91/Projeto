@@ -5,57 +5,43 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControleDeNota.Repositorios
 {
-    
+
     public class NotaRepositorio : INotaRepositorio
     {
-        private readonly SistemasDeNotasDBContext _dbContext;
-        public NotaRepositorio(SistemasDeNotasDBContext sistemasDeNotasDBContext)
+
+        private SistemasDeNotasDBContext _ctx;
+
+        public NotaRepositorio(SistemasDeNotasDBContext ctx)
         {
-            _dbContext = sistemasDeNotasDBContext;
+            _ctx = ctx;
         }
-        public async Task<NotaModel> BuscarPorIDNota(int id)
 
+        public void AdicionarNota(NotaModel nota)
         {
-
-            return await _dbContext.Notas.FirstOrDefaultAsync(x => x.Id == id);
-
+            _ctx.Notas.Add(nota);
+            _ctx.SaveChanges();
         }
-        public async Task<NotaModel> AdicionarNota(NotaModel nota)
-        {
 
+        public void AtualizarNota(NotaModel nota)
+        {
+            _ctx.Update(nota);
+            _ctx.SaveChanges();
+        }
+
+        public NotaModel BuscarPorIDNota(int id)
+        {
+            return _ctx.Notas
+                .FirstOrDefault(i => i.Id.Equals(id));
+        }
+
+        public void RemoverNota(NotaModel nota)
+        {
             
-            await _dbContext.Notas.AddAsync(nota);
-            await _dbContext.SaveChangesAsync();
-            return nota;
+            _ctx.Notas.Remove(nota);
         }
-        
-        public async Task<NotaModel> AtualizarNota(NotaModel nota, int id)
+        public void SaveChanges()
         {
-            NotaModel NotaPorID = await BuscarPorIDNota(id);
-            if (NotaPorID == null)
-            {
-                throw new Exception($"Nota com Id: {id} nao foi encontrado no Banco de dados");
-            }
-            NotaPorID.NotaDaDisciplina = nota.NotaDaDisciplina;
-            _dbContext.Update(NotaPorID);
-            _dbContext.SaveChanges();
-
-            return NotaPorID;
-        }
-
-        public async Task<bool> RemoverNota(int id)
-        {
-
-            NotaModel notaPorID = await BuscarPorIDNota(id);
-            if (notaPorID == null)
-            {
-                throw new Exception($"Aluno com Id: {id} nao foi encontrado no Banco de dados");
-            }
-
-            _dbContext.Remove(notaPorID);
-            _dbContext.SaveChanges();
-
-            return true;
+            _ctx.SaveChanges();
         }
     }
 }

@@ -5,10 +5,10 @@ namespace ControleDeNota.Repositorios.Interfaces
     public interface IAlunoRepositorio
     {
 
-        Task<List<AlunoModel>> MostrarTodosAlunos();
-        Task<AlunoModel> BuscarPorId(int id);   
-        Task<AlunoModel> Adicionar( AlunoModel aluno);
-        Task<AlunoModel> Atualizar (AlunoModel aluno, int id);
-        Task<bool> Remover(int id);
+        List<AlunoModel> MostrarTodosAlunos();
+        AlunoModel BuscarPorId(int id);   
+        void Adicionar( AlunoModel aluno);
+        void Atualizar (AlunoModel aluno);
+        void Remover(AlunoModel aluno);
     }
 }
